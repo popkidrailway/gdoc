@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gdoc | Final Master Cloud Build</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --p-blue: #3b82f6; --p-dark: #020617; }
+        body { background: var(--p-dark); color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass-card { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; }
+        .tech-input { background: #0f172a; border: 1px solid #1e293b; color: white; border-radius: 14px; padding: 14px; font-size: 14px; width: 100%; transition: 0.3s; }
+        .tech-input:focus { border-color: var(--p-blue); outline: none; box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+        .hidden { display: none; }
+        .neon-glow { text-shadow: 0 0 10px rgba(59, 130, 246, 0.6); }
+        .auth-toggle { cursor: pointer; transition: 0.3s; }
+        .auth-active { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="glass-card sticky top-0 z-50 rounded-none border-b border-slate-800 px-8 py-5 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black italic text-xl shadow-lg shadow-blue-500/20">G</div>
+            <h1 class="text-2xl font-black italic tracking-tighter neon-glow">GDOC</h1>
+        </div>
+        <div class="flex gap-6 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <button onclick="nav('auth')" id="nav-auth" class="text-blue-500">Access</button>
+            <button onclick="nav('patient')" id="nav-patient" class="hidden">My Health</button>
+            <button onclick="location.reload()" class="hover:text-red-500">Sign Out</button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6 mt-4">
+
+        <div id="view-auth" class="max-w-md mx-auto space-y-8 mt-10">
+            <div id="reg-box" class="glass-card p-10 border-t-4 border-blue-600 shadow-2xl">
+                <div class="flex justify-center gap-8 mb-8 text-xs font-black uppercase tracking-widest text-slate-500">
+                    <span onclick="toggleAuthMode('signup')" id="tab-signup" class="auth-toggle auth-active pb-1">Sign Up</span>
+                    <span onclick="toggleAuthMode('login')" id="tab-login" class="auth-toggle pb-1">Login</span>
+                </div>
+
+                <h2 id="auth-title" class="text-3xl font-black text-center mb-8">Cloud <span class="text-blue-500">Sync</span></h2>
+                
+                <form onsubmit="initSecurity(event)" class="space-y-5">
+                    <input type="text" id="reg-name" placeholder="Full Name" class="tech-input" required>
+                    <input type="email" id="reg-email" placeholder="Gmail Address" class="tech-input" required>
+                    <input type="password" id="reg-pass" placeholder="Password" class="tech-input" required>
+                    <select id="reg-hosp" class="tech-input" required>
+                        <option value="" disabled selected>Select Hospital</option>
+                        <option value="HOSP-001">Nairobi National</option>
+                        <option value="HOSP-002">Mombasa Specialist</option>
+                    </select>
+                    <button type="submit" id="main-auth-btn" class="w-full bg-blue-600 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02]">Generate Security Code</button>
+                </form>
+            </div>
+
+            <div id="otp-box" class="hidden glass-card p-10 border-t-4 border-yellow-500 text-center">
+                <h2 class="text-2xl font-black mb-6">Verification</h2>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl mb-8">
+                    <p class="text-[10px] text-yellow-500 font-black uppercase mb-2 italic">Internal Security Code</p>
+                    <div id="display-otp" class="text-4xl font-black tracking-[0.5em] text-white">------</div>
+                </div>
+                <input type="text" id="otp-input" maxlength="6" class="tech-input text-center text-3xl font-black tracking-[0.8em] mb-6 border-yellow-500/50" placeholder="******">
+                <button onclick="verifyAndSync()" class="w-full bg-yellow-600 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:bg-yellow-500">Verify & Sync Cloud</button>
+            </div>
+        </div>
+
+        <div id="view-patient" class="hidden space-y-8">
+            <div class="glass-card p-8 border-l-8 border-blue-600 flex justify-between items-center">
+                <div>
+                    <h2 id="p-name-val" class="text-3xl font-black italic text-white uppercase">---</h2>
+                    <p id="p-hosp-val" class="text-xs text-blue-500 font-bold uppercase tracking-widest"></p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="bg-green-500/10 text-green-500 text-[10px] font-black px-4 py-2 rounded-full border border-green-500/20">Cloud Synchronized</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-card p-8 border-b-4 border-blue-600">
+                    <h3 class="text-xs font-black text-slate-500 uppercase mb-6 tracking-widest"><i class="fas fa-edit mr-2"></i>New Clinical Note</h3>
+                    <textarea id="h-note" placeholder="Log surgeries, current medication, or symptoms..." class="tech-input h-48 mb-6"></textarea>
+                    <button onclick="saveHistory()" class="bg-blue-600 px-10 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all active:scale-95">Archive to Cloud</button>
+                </div>
+                <div class="glass-card p-8">
+                    <h3 class="text-xs font-black text-slate-500 uppercase mb-6 tracking-widest"><i class="fas fa-database mr-2"></i>Medical History Feed</h3>
+                    <div id="h-feed" class="space-y-4 max-h-80 overflow-y-auto pr-4 text-xs text-slate-400 italic">No cloud records found.</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="fixed bottom-8 right-8 z-[100]">
+        <div id="ai-panel" class="hidden absolute bottom-24 right-0 w-80 glass-card p-6 shadow-2xl border-blue-500/30">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+                <span class="text-[10px] font-black text-blue-500 uppercase">Gdoc Triage AI</span>
+                <i class="fas fa-brain text-blue-400"></i>
+            </div>
+            <div id="ai-messages" class="h-56 overflow-y-auto mb-4 text-[11px] space-y-4 pr-2"></div>
+            <div class="flex gap-2">
+                <input type="text" id="ai-q" placeholder="Ask medical question..." class="flex-1 bg-slate-900 border border-slate-800 p-3 rounded-xl text-xs outline-none">
+                <button onclick="callAI()" class="bg-blue-600 px-4 rounded-xl"><i id="ai-spin" class="fas fa-paper-plane text-xs"></i></button>
+            </div>
+        </div>
+        <button onclick="document.getElementById('ai-panel').classList.toggle('hidden')" class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-xl shadow-blue-600/40 hover:scale-105 transition-transform">
+            <i class="fas fa-robot text-white text-2xl"></i>
+        </button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, addDoc, collection, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDe8i7FOSmuWCUhqwLXb9nBDWQKSIBKJpw",
+            authDomain: "ridesphere-popkid.firebaseapp.com",
+            projectId: "ridesphere-popkid",
+            storageBucket: "ridesphere-popkid.firebasestorage.app",
+            messagingSenderId: "476462103607",
+            appId: "1:476462103607:web:281b8f0be99b1125c113b2",
+            measurementId: "G-JLKMNP9VYE"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let STATE = { otp: null, userData: null, mode: 'signup' };
+
+        // TOGGLE LOGIN/SIGNUP MODE
+        window.toggleAuthMode = (mode) => {
+            STATE.mode = mode;
+            const isLogin = mode === 'login';
+            
+            // UI Updates
+            document.getElementById('tab-signup').classList.toggle('auth-active', !isLogin);
+            document.getElementById('tab-login').classList.toggle('auth-active', isLogin);
+            document.getElementById('auth-title').innerHTML = isLogin ? 'Account <span class="text-blue-500">Login</span>' : 'Cloud <span class="text-blue-500">Sync</span>';
+            document.getElementById('main-auth-btn').innerText = isLogin ? 'Access Secure Portal' : 'Generate Security Code';
+            
+            // Hide/Show Fields
+            document.getElementById('reg-name').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('reg-hosp').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('reg-name').required = !isLogin;
+            document.getElementById('reg-hosp').required = !isLogin;
+        };
+
+        window.nav = (v) => {
+            document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
+            document.getElementById('view-' + v).classList.remove('hidden');
+        };
+
+        // 1. GENERATE LOCAL SECURITY TOKEN
+        window.initSecurity = (e) => {
+            e.preventDefault();
+            STATE.userData = {
+                name: document.getElementById('reg-name').value || "Returning Patient",
+                email: document.getElementById('reg-email').value,
+                pass: document.getElementById('reg-pass').value,
+                hosp: document.getElementById('reg-hosp').value || "Assigned Facility"
+            };
+            STATE.otp = Math.floor(100000 + Math.random() * 900000).toString();
+            document.getElementById('display-otp').innerText = STATE.otp;
+            document.getElementById('reg-box').classList.add('hidden');
+            document.getElementById('otp-box').classList.remove('hidden');
+        };
+
+        // 2. SMART VERIFICATION (REGISTER OR LOGIN)
+        window.verifyAndSync = async () => {
+            const otpInput = document.getElementById('otp-input').value;
+            if(otpInput !== STATE.otp) return alert("Code Mismatch.");
+
+            try {
+                if(STATE.mode === 'signup') {
+                    const cred = await createUserWithEmailAndPassword(auth, STATE.userData.email, STATE.userData.pass);
+                    await setDoc(doc(db, "users", cred.user.uid), {
+                        name: STATE.userData.name,
+                        email: STATE.userData.email,
+                        hosp: STATE.userData.hosp,
+                        uid: cred.user.uid,
+                        created: new Date()
+                    });
+                    completeAuth(STATE.userData.name, STATE.userData.hosp);
+                } else {
+                    const cred = await signInWithEmailAndPassword(auth, STATE.userData.email, STATE.userData.pass);
+                    const userDoc = await getDoc(doc(db, "users", cred.user.uid));
+                    const data = userDoc.data() || { name: "User", hosp: "Default" };
+                    completeAuth(data.name, data.hosp);
+                }
+            } catch (err) {
+                if (err.code === 'auth/email-already-in-use') {
+                    alert("Email already in use. Switching to Login mode...");
+                    toggleAuthMode('login');
+                } else {
+                    alert(err.message);
+                }
+            }
+        };
+
+        function completeAuth(name, hosp) {
+            document.getElementById('p-name-val').innerText = name;
+            document.getElementById('p-hosp-val').innerText = "Facility: " + hosp;
+            document.getElementById('nav-patient').classList.remove('hidden');
+            nav('patient');
+            syncHistoryFeed();
+        }
+
+        // 3. MEDICAL CLOUD PERSISTENCE
+        window.saveHistory = async () => {
+            const note = document.getElementById('h-note').value;
+            if(!note || !auth.currentUser) return;
+            try {
+                await addDoc(collection(db, "history"), {
+                    userId: auth.currentUser.uid,
+                    hospId: STATE.userData.hosp,
+                    note: note,
+                    timestamp: new Date()
+                });
+                document.getElementById('h-note').value = "";
+                alert("Cloud Archive Updated.");
+            } catch (err) { console.error("Archive Error:", err); }
+        };
+
+        function syncHistoryFeed() {
+            const q = query(collection(db, "history"), where("userId", "==", auth.currentUser.uid), orderBy("timestamp", "desc"));
+            onSnapshot(q, (snap) => {
+                const feed = document.getElementById('h-feed');
+                feed.innerHTML = snap.docs.length > 0 ? snap.docs.map(d => `
+                    <div class="border-l-4 border-blue-500 pl-4 py-3 bg-slate-900/50 border-y border-r border-slate-800 rounded-r-2xl mb-2">
+                        <p class="text-blue-500 font-black text-[9px] uppercase mb-1">${d.data().timestamp.toDate().toLocaleString()}</p>
+                        <p class="text-slate-200 text-xs">${d.data().note}</p>
+                    </div>
+                `).join('') : '<p class="italic text-slate-700">No medical archives found in cloud.</p>';
+            });
+        }
+
+        // 4. GIFTEDTECH AI TRIAGE
+        window.callAI = async () => {
+            const inp = document.getElementById('ai-q');
+            const box = document.getElementById('ai-messages');
+            const icon = document.getElementById('ai-spin');
+            const q = inp.value; if(!q) return;
+
+            inp.value = "";
+            icon.className = "fas fa-spinner animate-spin text-blue-400";
+            box.innerHTML += `<div class="text-right ml-6"><p class="bg-slate-800 p-3 rounded-2xl inline-block text-slate-300">You: ${q}</p></div>`;
+            
+            try {
+                const res = await fetch(`https://api.giftedtech.co.ke/api/ai/gpt4o?apikey=gifted&q=${encodeURIComponent(q)}`);
+                const data = await res.json();
+                box.innerHTML += `<div class="text-left mr-6"><p class="bg-blue-900/40 p-3 rounded-2xl inline-block border border-blue-500/20 text-blue-50">AI: ${data.result}</p></div>`;
+                if(auth.currentUser) await addDoc(collection(db, "ai_logs"), { userId: auth.currentUser.uid, q, res: data.result, time: new Date() });
+            } catch { box.innerHTML += `<p class="text-red-500 text-[10px]">Triage Core Offline</p>`; }
+            icon.className = "fas fa-paper-plane";
+            box.scrollTop = box.scrollHeight;
+        };
+    </script>
+</body>
+</html>
