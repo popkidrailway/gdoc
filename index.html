@@ -13,11 +13,11 @@
         .hidden { display: none !important; }
         .tech-input { background: #0f172a; border: 1px solid #1e293b; color: white; border-radius: 12px; padding: 12px; font-size: 14px; width: 100%; transition: 0.3s; }
         .tech-input:focus { border-color: var(--p-blue); outline: none; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
-        .nav-btn { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #64748b; transition: 0.3s; }
+        .nav-btn { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #64748b; transition: 0.3s; cursor: pointer; }
         .nav-btn:hover, .nav-active { color: var(--p-blue); }
         .ai-pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
-        #p-img { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid var(--p-blue); background: #1e293b; }
+        #p-img { width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 3px solid var(--p-blue); background: #1e293b; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -39,7 +39,7 @@
 
         <div id="view-auth" class="max-w-xl mx-auto space-y-8 mt-10">
             <div class="glass-card p-8 border-t-4 border-blue-600">
-                <h2 id="auth-header" class="text-2xl font-black text-center mb-6">Patient <span class="text-blue-500">Registry</span></h2>
+                <h2 id="auth-header" class="text-2xl font-black text-center mb-6 uppercase tracking-tighter italic">Patient <span class="text-blue-500">Registry</span></h2>
                 
                 <form onsubmit="handleAuth(event)" class="space-y-4">
                     <div id="reg-fields" class="space-y-4">
@@ -54,49 +54,49 @@
                             <input type="text" id="reg-blood" placeholder="Blood Group (O+)" class="tech-input">
                             <input type="number" id="reg-age" placeholder="Age" class="tech-input">
                         </div>
-                        <div class="p-2 border border-dashed border-slate-700 rounded-xl">
-                            <label class="text-[10px] text-slate-500 uppercase font-bold px-2">Profile Photo</label>
-                            <input type="file" id="reg-image" accept="image/*" class="text-xs text-slate-400 p-2 w-full">
+                        <div class="p-3 border border-dashed border-slate-700 rounded-xl">
+                            <label class="text-[9px] text-slate-500 uppercase font-bold ml-1">Upload Profile Photo</label>
+                            <input type="file" id="reg-image" accept="image/*" class="text-xs text-slate-400 mt-1 w-full">
                         </div>
                     </div>
 
                     <input type="email" id="auth-email" placeholder="Email Address" class="tech-input" required>
                     <input type="password" id="auth-password" placeholder="Password" class="tech-input" required>
                     
-                    <button type="submit" id="auth-btn" class="w-full bg-blue-600 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-all">
+                    <button type="submit" id="auth-btn" class="w-full bg-blue-600 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-500 shadow-lg shadow-blue-500/20 transition-all">
                         Initialize Record
                     </button>
                 </form>
-                <div class="mt-4 text-center">
-                    <button onclick="toggleAuthMode()" id="toggle-btn" class="text-[10px] text-slate-500 font-bold uppercase hover:text-blue-500">Already have a record? Sign In</button>
+                <div class="mt-6 text-center">
+                    <button onclick="toggleAuthMode()" id="toggle-btn" class="text-[10px] text-slate-500 font-black uppercase tracking-widest hover:text-blue-500">Already have a record? Sign In</button>
                 </div>
             </div>
         </div>
 
         <div id="view-patient" class="hidden space-y-6">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-6 mb-6">
-                <div class="flex items-center gap-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-8 mb-6">
+                <div class="flex items-center gap-5">
                     <img id="p-img" src="https://via.placeholder.com/150" alt="Profile">
                     <div>
-                        <p class="text-[10px] text-blue-500 font-black uppercase tracking-widest">Central Health Record</p>
+                        <p class="text-[10px] text-blue-500 font-black uppercase tracking-widest">Central Health ID</p>
                         <h2 id="p-name" class="text-3xl font-black uppercase italic">---</h2>
+                        <p id="p-hosp" class="text-xs text-slate-500 font-bold uppercase"></p>
                     </div>
                 </div>
                 <div class="text-right">
-                    <p id="p-hosp" class="text-xs text-slate-500 font-bold uppercase"></p>
-                    <span class="text-[10px] bg-blue-900/30 text-blue-400 px-2 py-1 rounded">Status: Synced</span>
+                    <span class="text-[10px] bg-blue-900/30 text-blue-400 px-3 py-1 rounded-full font-bold uppercase border border-blue-500/20">Status: Secure</span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="glass-card p-6 border-l-4 border-blue-500">
                     <h3 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Update Medical History</h3>
-                    <textarea id="h-note" rows="4" placeholder="Add new medical history notes..." class="tech-input mb-4 h-32"></textarea>
-                    <button onclick="saveHistory()" class="bg-blue-600 px-6 py-2 rounded-lg text-[10px] font-black uppercase">Save History</button>
+                    <textarea id="h-note" rows="4" placeholder="Update symptoms, medications, or lab results..." class="tech-input mb-4 h-40 resize-none"></textarea>
+                    <button onclick="saveHistory()" class="w-full bg-blue-600 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20">Save Entry</button>
                 </div>
                 <div class="glass-card p-6">
                     <h3 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Your Archive</h3>
-                    <div id="h-list" class="space-y-4 max-h-60 overflow-y-auto pr-2 text-sm text-slate-300"></div>
+                    <div id="h-list" class="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-hide text-sm text-slate-300"></div>
                 </div>
             </div>
         </div>
@@ -109,30 +109,31 @@
             <div id="master-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             <div id="master-hosp-details" class="hidden glass-card p-8 border-t-4 border-purple-500">
                 <div class="flex justify-between items-center mb-8">
-                    <h3 id="target-hosp-name" class="text-xl font-black text-purple-400 uppercase">---</h3>
-                    <button onclick="closeMasterView()" class="text-xs text-slate-500 hover:text-white"><i class="fas fa-times mr-2"></i>Back</button>
+                    <h3 id="target-hosp-name" class="text-xl font-black text-purple-400 uppercase tracking-tighter">---</h3>
+                    <button onclick="closeMasterView()" class="text-xs text-slate-500 hover:text-white uppercase font-bold"><i class="fas fa-times mr-2"></i>Close</button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="text-slate-500 uppercase text-[10px] border-b border-slate-800">
-                            <tr><th class="pb-4">Patient Name</th><th class="pb-4">Vitals</th><th class="pb-4">Last Note</th></tr>
+                            <tr><th class="pb-4">Patient Name</th><th class="pb-4">Vitals</th><th class="pb-4">Last Entry</th></tr>
                         </thead>
                         <tbody id="master-table-body"></tbody>
                     </table>
                 </div>
             </div>
         </div>
+
     </main>
 
     <div class="fixed bottom-6 right-6 z-50">
         <div id="ai-chat" class="hidden absolute bottom-20 right-0 w-80 glass-card p-4 shadow-2xl border-blue-500/50 flex flex-col">
             <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
-                <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Gdoc Triage AI</span>
+                <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Gdoc Copilot AI</span>
                 <i class="fas fa-robot text-blue-500"></i>
             </div>
-            <div id="ai-messages" class="h-48 overflow-y-auto mb-4 text-[11px] space-y-3 pr-2"></div>
+            <div id="ai-messages" class="h-48 overflow-y-auto mb-4 text-[11px] space-y-3 pr-2 scrollbar-hide"></div>
             <div class="flex gap-2">
-                <input type="text" id="ai-input" placeholder="Describe symptoms..." class="flex-1 bg-slate-900 p-2 rounded-lg text-xs border border-slate-800 outline-none focus:border-blue-500">
+                <input type="text" id="ai-input" placeholder="Ask AI anything..." class="flex-1 bg-slate-900 p-2 rounded-lg text-xs border border-slate-800 outline-none focus:border-blue-500">
                 <button onclick="askAI()" class="bg-blue-600 px-3 rounded-lg"><i id="ai-icon" class="fas fa-paper-plane text-xs"></i></button>
             </div>
         </div>
@@ -162,7 +163,7 @@
 
         let isLoginMode = false;
 
-        // HELPER: Image to Base64
+        // Image to Base64 (The Skill Hack)
         const toBase64 = file => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -170,29 +171,32 @@
             reader.onerror = error => reject(error);
         });
 
-        // NAVIGATION
-        window.nav = async (view) => {
-            document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
-            document.getElementById('view-' + view).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
-            const btn = document.getElementById('link-' + view);
-            if(btn) btn.classList.add('nav-active');
-            if(view === 'master') renderMasterGrid();
-        };
-
+        // Toggle Auth
         window.toggleAuthMode = () => {
             isLoginMode = !isLoginMode;
             document.getElementById('reg-fields').classList.toggle('hidden');
             document.getElementById('auth-header').innerHTML = isLoginMode ? "Patient <span class='text-blue-500'>Login</span>" : "Patient <span class='text-blue-500'>Registry</span>";
-            document.getElementById('auth-btn').innerText = isLoginMode ? "Sign In" : "Initialize Record";
+            document.getElementById('auth-btn').innerText = isLoginMode ? "SIGN IN" : "INITIALIZE RECORD";
             document.getElementById('toggle-btn').innerText = isLoginMode ? "Need to register? Create Record" : "Already have a record? Sign In";
         };
 
-        // AUTH HANDLER
+        // Navigation Logic
+        window.nav = (view) => {
+            document.querySelectorAll('main > div').forEach(d => d.classList.add('hidden'));
+            document.getElementById('view-' + view).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+            const link = document.getElementById('link-' + view);
+            if(link) link.classList.add('nav-active');
+            if(view === 'master') renderMasterGrid();
+        };
+
+        // Handle Registration/Login
         window.handleAuth = async (e) => {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
+            const btn = document.getElementById('auth-btn');
+            btn.disabled = true; btn.innerText = "AUTHENTICATING...";
 
             try {
                 if(isLoginMode) {
@@ -200,68 +204,64 @@
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     const file = document.getElementById('reg-image').files[0];
-                    let imgData = "";
-                    if(file) imgData = await toBase64(file);
+                    let imgBase64 = "";
+                    if(file) imgBase64 = await toBase64(file);
 
-                    const patientData = {
+                    const data = {
                         name: document.getElementById('reg-name').value,
                         hospId: document.getElementById('reg-hosp').value,
                         blood: document.getElementById('reg-blood').value || 'N/A',
                         age: document.getElementById('reg-age').value || 'N/A',
-                        photo: imgData,
+                        photo: imgBase64,
                         history: []
                     };
-                    await setDoc(doc(db, "patients", cred.user.uid), patientData);
+                    await setDoc(doc(db, "patients", cred.user.uid), data);
                 }
-            } catch (err) { alert(err.message); }
+            } catch (err) { alert(err.message); btn.disabled = false; btn.innerText = isLoginMode ? "SIGN IN" : "INITIALIZE RECORD"; }
         };
 
         window.handleLogout = () => signOut(auth).then(() => window.location.reload());
 
-        // OBSERVER
+        // Observe Auth State (The PERMA Brain)
         onAuthStateChanged(auth, async (user) => {
             if(user) {
                 const snap = await getDoc(doc(db, "patients", user.uid));
                 if(snap.exists()) {
                     const data = snap.data();
                     document.getElementById('p-name').innerText = data.name;
-                    document.getElementById('p-hosp').innerText = "Facility: " + data.hospId;
+                    document.getElementById('p-hosp').innerText = "Clinical Provider: " + data.hospId;
                     if(data.photo) document.getElementById('p-img').src = data.photo;
-                    renderPatientHistory(data.history);
+                    renderHistoryList(data.history);
                     document.getElementById('link-patient').classList.remove('hidden');
                     document.getElementById('btn-logout').classList.remove('hidden');
                     nav('patient');
                 }
-            } else {
-                nav('auth');
-            }
+            } else { nav('auth'); }
         });
 
-        // HISTORY
+        // Save History
         window.saveHistory = async () => {
             const note = document.getElementById('h-note').value;
             if(!note || !auth.currentUser) return;
             const entry = { timestamp: new Date().toLocaleString(), text: note };
-            await updateDoc(doc(db, "patients", auth.currentUser.uid), {
-                history: arrayUnion(entry)
-            });
+            await updateDoc(doc(db, "patients", auth.currentUser.uid), { history: arrayUnion(entry) });
             document.getElementById('h-note').value = "";
             const snap = await getDoc(doc(db, "patients", auth.currentUser.uid));
-            renderPatientHistory(snap.data().history);
+            renderHistoryList(snap.data().history);
         };
 
-        function renderPatientHistory(history) {
+        function renderHistoryList(history) {
             const list = document.getElementById('h-list');
             list.innerHTML = [...history].reverse().map(h => `
-                <div class="border-l-2 border-blue-500 pl-4 py-1 mb-4">
-                    <p class="text-[9px] text-blue-500 font-bold">${h.timestamp}</p>
-                    <p class="text-slate-300">${h.text}</p>
+                <div class="border-l-2 border-blue-500 pl-4 py-3 mb-4 bg-slate-900/40 rounded-r-xl border border-slate-800/50">
+                    <p class="text-[9px] text-blue-500 font-black uppercase mb-1">${h.timestamp}</p>
+                    <p class="text-sm text-slate-200">${h.text}</p>
                 </div>
-            `).join('') || '<p class="italic text-slate-600">No medical history entries found.</p>';
+            `).join('') || '<p class="italic text-slate-700 text-center py-5">No clinical records found.</p>';
         }
 
-        // MASTER ADMIN LOGIC
-        const hospitals = [
+        // Master Logic
+        const hospitalList = [
             { id: 'HOSP-001', name: 'Nairobi National Hospital', loc: 'Nairobi' },
             { id: 'HOSP-002', name: 'Mombasa Specialist Center', loc: 'Mombasa' },
             { id: 'HOSP-003', name: 'Kisumu Digital Clinic', loc: 'Kisumu' }
@@ -269,10 +269,10 @@
 
         async function renderMasterGrid() {
             const grid = document.getElementById('master-grid');
-            grid.innerHTML = hospitals.map(h => `
-                <div onclick="viewHospPatients('${h.id}', '${h.name}')" class="glass-card p-6 cursor-pointer hover:border-blue-500 group transition-all">
-                    <h4 class="font-black text-lg group-hover:text-blue-400">${h.name}</h4>
-                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">${h.loc}, Kenya</p>
+            grid.innerHTML = hospitalList.map(h => `
+                <div onclick="viewHospPatients('${h.id}', '${h.name}')" class="glass-card p-6 cursor-pointer hover:border-blue-500 transition-all">
+                    <h4 class="font-black text-lg">${h.name}</h4>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold">${h.loc}, Kenya</p>
                 </div>
             `).join('');
             grid.classList.remove('hidden');
@@ -281,10 +281,8 @@
 
         window.viewHospPatients = async (id, name) => {
             document.getElementById('master-grid').classList.add('hidden');
-            const details = document.getElementById('master-hosp-details');
             const table = document.getElementById('master-table-body');
             document.getElementById('target-hosp-name').innerText = name;
-
             const qSnap = await getDocs(collection(db, "patients"));
             let rows = "";
             qSnap.forEach(doc => {
@@ -297,25 +295,34 @@
                     </tr>`;
                 }
             });
-            table.innerHTML = rows || '<tr><td colspan="3" class="py-10 text-center text-slate-700">No records found.</td></tr>';
-            details.classList.remove('hidden');
+            table.innerHTML = rows || '<tr><td colspan="3" class="py-10 text-center">No patients found.</td></tr>';
+            document.getElementById('master-hosp-details').classList.remove('hidden');
         };
 
         window.closeMasterView = () => renderMasterGrid();
 
-        // AI
+        // NEW YUPRA AI LOGIC
         window.askAI = async () => {
             const input = document.getElementById('ai-input');
             const box = document.getElementById('ai-messages');
             const icon = document.getElementById('ai-icon');
             const q = input.value; if(!q) return;
+
             input.value = ""; icon.className = "fas fa-spinner animate-spin";
-            box.innerHTML += `<div class="text-right ml-8"><p class="bg-slate-800 p-2 rounded-lg text-slate-300">You: ${q}</p></div>`;
+            box.innerHTML += `<div class="text-right ml-8 mb-3"><p class="bg-slate-800 p-2 rounded-lg inline-block text-slate-300">You: ${q}</p></div>`;
+            box.scrollTop = box.scrollHeight;
+
             try {
-                const res = await fetch(`https://api.giftedtech.co.ke/api/ai/gpt4o?apikey=gifted&q=${encodeURIComponent(q)}`);
+                const res = await fetch(`https://api.yupra.my.id/api/ai/copilot?text=${encodeURIComponent(q)}`);
                 const data = await res.json();
-                box.innerHTML += `<div class="mr-8 flex gap-2"><div class="w-4 h-4 bg-blue-600 rounded-full flex-shrink-0"></div><p class="bg-blue-900/40 p-2 rounded-lg text-slate-200">${data.result}</p></div>`;
-            } catch (err) { box.innerHTML += `<p class="text-red-500 text-[9px]">AI connection error.</p>`; }
+                if(data.status && data.result) {
+                    box.innerHTML += `
+                        <div class="mr-8 flex gap-2 mb-3">
+                            <div class="w-5 h-5 bg-blue-600 rounded-full flex-shrink-0 flex items-center justify-center text-[8px] font-black">AI</div>
+                            <p class="bg-blue-900/40 p-2 rounded-lg border border-blue-500/20 text-slate-200 shadow-lg">${data.result}</p>
+                        </div>`;
+                }
+            } catch (err) { box.innerHTML += `<p class="text-red-500 text-[9px] text-center">AI unavailable.</p>`; }
             icon.className = "fas fa-paper-plane"; box.scrollTop = box.scrollHeight;
         };
     </script>
